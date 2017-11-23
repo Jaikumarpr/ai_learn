@@ -37,7 +37,7 @@ def linear_cost(features, params, train_out, train_size=None):
         train_size = features.shape[0]
 
     return 0.5 * (1 / train_size) * np.sum(squared_error(features, params,
-
+                                                         train_out))
 
 
 # batch gradienct descent for linear regression
@@ -64,7 +64,6 @@ def batch_grad_descent(features, train_out, params=None, train_size=None,
 
         cost_function_array.append(linear_cost(features, params, train_out,
                                                train_size))
-
 
         params_array.append(params.tolist())
 
@@ -104,7 +103,6 @@ def plot_contour(features, train_out, fighdl):
 
     print(t_0.size)
 
-
     for i in range(t_0.size):
         for j in range(t_1.size):
             Z[i, j] = linear_cost(features, [t_0[i], t_1[j]], train_out)
@@ -118,7 +116,6 @@ def plot_surf(features, train_out, fighdl):
     Z = np.zeros((100, 100))
 
     print(t_0.size)
-
 
     for i in range(t_0.size):
         for j in range(t_1.size):
