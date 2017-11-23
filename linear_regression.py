@@ -36,11 +36,6 @@ def linear_cost(features, params, train_out, train_size=None):
     return 0.5 * np.sum(squared_error(features, params, train_out)) / train_size
 
 
-# check for tolerance
-def under_tolerance(temp, val, tol):
-    return np.sum(np.abs(temp - val)) <= tol
-
-
 # batch gradienct descent for linear regression
 def batch_grad_descent(features, train_out, params=None, train_size=None,
                        tolerance=None):
