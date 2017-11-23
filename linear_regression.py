@@ -57,8 +57,8 @@ def batch_grad_descent(features, train_out, params=None, train_size=None,
     cost_function_array = []
     params_array = []
     temp_params = np.zeros(features.shape[1])
-
-    while True:
+    iterations = 0
+    while iterations < 1000:
 
         for i in range(params.shape[0]):
             grd = gradient(features, params, train_out, train_size)
@@ -71,8 +71,9 @@ def batch_grad_descent(features, train_out, params=None, train_size=None,
                                                train_size))
         params_array.append(params)
 
-        if under_tolerance(temp_params, params, tolerance):
-            break
+        iterations += 1
+        # if under_tolerance(temp_params, params, tolerance):
+        #     break
 
     return params, cost_function_array, params_array
 
@@ -118,3 +119,6 @@ if __name__ == '__main__':
     print(theta)
 
     print(cost_func)
+
+    plt.plot(np.linspace(0, 100, num=1000), cost_func)
+    plt.show()
