@@ -1,4 +1,4 @@
-# usr/bin/env python3
+# !/usr/bin/env python3
 
 import numpy as np
 import data.data_helper as dh
@@ -6,33 +6,66 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-# add default feature for first parameter
-def initialize_feature(features):
+# mean normalize an array
+def mean_normalize(feature):
+    """
+    Outputs mean normalied array
 
-    return np.insert(features, 0, 1, axis=1)
+    """
+
+# initialize a feature with default value
+
+
+def initialize_feature(features, col, val=1):
+    """
+    Initialize a feature with a default value vector
+
+    features: exisiting feature matrix
+    val : initial value, Default is 1
+    col : column to insert, index start at 1
+
+    """
+    return np.insert(features, col, val, axis=1)
 
 
 # error vector
-def error(features, params, train_out):
+def error_vect(features, params, train_out):
+    """
+    Calculate's the error vector
 
+    features: feature set
+    params: params vector
+    train_out: output vector
+
+    """
+    #     matrix multiplication
     return features.dot(params) - train_out
 
 
 # squared error function
 def squared_error(features, params, train_out):
+    """
+    Calculates the element-wise square of error vector
 
-    return np.square(error(features, params, train_out))
+    features: feature set
+    params: params vector
+    train_out: output vector
 
-
-# gradient of linear regression
-def gradient(features, params, train_out):
-
-    return features.transpose().dot(error(features, params, train_out))
+    """
+    return np.square(error_vect(features, params, train_out))
 
 
 # cost function for linear regression
-def linear_cost(features, params, train_out, train_size=None):
+def cost_func(features, params, train_out, train_size=None):
+    """
+    Calculate the cost of plot_regression
 
+    features: feature set
+    params: params vector
+    train_out: output vector
+    train_size: avaialable train size, Default is feature shape
+
+    """
     if train_size is None:
         train_size = features.shape[0]
 
@@ -40,9 +73,26 @@ def linear_cost(features, params, train_out, train_size=None):
                                                          train_out))
 
 
+# gradient of linear regression
+def gradient(features, params, train_out, train_size=None):
+    """
+    Calculates the gradient of cost function
+
+    features: feature set
+    params: params vector
+    train_out: output vector
+
+    """
+    if train_size is None:
+        train_size = features.shape[0]
+
+    return (1 / train_size) * features.transpose().dot(error_vect(features,
+                                                                  params, train_out))
+
+
 # batch gradienct descent for linear regression
 def batch_grad_descent(features, train_out, params=None, train_size=None,
-                       tolerance=None):
+                       tolerance=None, learn_rate=0.06):
 
     if tolerance is None:
         tolerance = 0.0001
@@ -53,18 +103,21 @@ def batch_grad_descent(features, train_out, params=None, train_size=None,
     if params is None:
         params = np.zeros(features.shape[1])
 
-    learn_rate = 0.06
     cost_function_array = []
     params_array = []
 
     for i in np.arange(1500):
 
+        # calculate the gradient vector
         grd = gradient(features, params, train_out)
-        params = params - (learn_rate * grd / train_size)
 
-        cost_function_array.append(linear_cost(features, params, train_out,
-                                               train_size))
+        # calculate the new params
+        params = params - (learn_rate * grd)
 
+        # calculate and append to cost function for the params to a list
+        cost_function_array.append(cost_func(features, params, train_out,
+                                             train_size))
+        # append the params to a list
         params_array.append(params.tolist())
 
     return params, cost_function_array, params_array
@@ -127,7 +180,7 @@ def plot_surf(features, train_out, fighdl):
 if __name__ == '__main__':
     ip = ['temp']
     op = ['casual']
-    file_path = '/Users/jaikumarpettikkattil/github/MLearn/data/bike_sharing/day.csv'
+    file_path = '/Users/jaikumar/Projects/MLearn/data/bike_sharing/day.csv'
     x, y = dh.import_data(file_path, ip, op)
 
     train_out = y.flatten(0) / np.max(y.flatten(0))
@@ -163,6 +216,6 @@ if __name__ == '__main__':
     ax2.plot(gg, cost_func, 'b')
 
     print(theta_array[:][0])
-    ax4.scatter(theta_array[:, 0], theta_array[:, 1], c='r')
+    #ax4.scatter(theta_array[:, 0], theta_array[:, 1], c='r')
 
     plt.show()
