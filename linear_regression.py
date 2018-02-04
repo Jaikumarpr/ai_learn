@@ -27,7 +27,7 @@ def d_sigmoid(y):
 # mean normalize an array
 def mean_normalize(feature, method=None):
     """
-    Outputs mean normalied array
+    Outputs mean normalized array
 
     method : standard deviation, range of values (Default)
 
