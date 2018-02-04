@@ -1,3 +1,6 @@
+
+# !/usr/bin/env python3
+
 """
 1. tensor
 2. computational graph

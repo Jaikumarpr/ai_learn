@@ -46,13 +46,28 @@ def initialize_feature(features, col, val=1):
 
     features: exisiting feature matrix
     val : initial value, Default is 1
-    col : column to insert, index start at 1
+    col : column to insert, index start at 0
 
     """
     return np.insert(features, col, val, axis=1)
 
 
+# generate initial params_array
+def generate_params(count=2, generate_as="vector"):
+    """
+    generate initial parameters for features
+
+    count: no of parameters
+    generate_as: vector or numpy array
+    """
+    if generate_as is "vector":
+        return np.zeros(count).reshape(-1, 1)
+
+    return np.zeros(count)
+
 # error vector
+
+
 def delta(features, params, train_out, regression_type=None):
     """
     Calculate's the error vector
@@ -64,7 +79,7 @@ def delta(features, params, train_out, regression_type=None):
 
     """
 
-    if regression_type is logistic:
+    if regression_type is "logistic":
         return sigmoid(features.dot(params)) - train_out
 
     #     matrix multiplication
@@ -113,20 +128,20 @@ def gradient(features, params, train_out, train_size=None, regression_type=None)
     reg_type: logistic or linear
 
     """
-    if regression_type is logistic:
+    if regression_type is "logistic":
         return features.transpose().dot(delta(features, params, train_out,
-                                              regression_type=logistic))
+                                              regression_type="logistic"))
 
     if train_size is None:
         train_size = features.shape[0]
 
     return (1 / train_size) * features.transpose().dot(delta(features,
-                                                            params, train_out))
+                                                             params, train_out))
 
 
 # batch gradienct descent for linear regression
 def batch_gradient_descent(features, train_out, params=None, train_size=None,
-                           tolerance=None, learn_rate=0.06):
+                           tolerance=None, epochs=1500, learn_rate=0.06):
 
     if tolerance is None:
         tolerance = 0.0001
@@ -135,22 +150,22 @@ def batch_gradient_descent(features, train_out, params=None, train_size=None,
         train_size = features.shape[0]
 
     if params is None:
-        params = np.zeros(features.shape[1])
+        params = generate_params(features.shape[1])
 
-    loss_array = []
+    loss_array = np.zeros(epochs)
     params_array = []
 
-    for i in np.arange(1500):
+    for i in np.arange(epochs):
 
         # calculate the gradient vector
-        grd = gradient(features, params, train_out)
+        grd = gradient(features, params, train_out).reshape(-1, 1)
 
         # calculate the new params
         params = params - (learn_rate * grd)
 
         # calculate and append to cost function for the params to a list
-        loss_array.append(loss(features, params, train_out,
-                               train_size))
+        loss_array[i] = loss(features, params, train_out,
+                             train_size)
 
         # append the params to a list
         params_array.append(params.tolist())
@@ -172,10 +187,6 @@ def normal_equation(features, train_out):
     x_prime = np.transpose(features)
 
     return m_inv(x_prime.dot(features)).dot(x_prime).dot(train_out)
-
-
-
-
 
 # def stochastic_grad_descent():
 #     pass

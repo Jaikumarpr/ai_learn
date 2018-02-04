@@ -1,0 +1,5 @@
+# ignore forks
+forks/
+
+# ignore worksheets
+worksheet.py
