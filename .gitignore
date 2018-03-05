@@ -3,3 +3,6 @@ forks/
 
 # ignore worksheets
 worksheet.py
+
+# visual studio code
+.vscode/

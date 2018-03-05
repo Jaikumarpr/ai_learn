@@ -33,7 +33,7 @@ def mean_normalize(feature, method=None):
 
     """
 
-    if method is std:  # standard deviation
+    if method is "std":  # standard deviation
         return (feature - np.mean(feature, axis=0)) / np.std(feature, axis=0)
 
     return (feature - np.mean(feature, axis=0)) / np.ptp(feature, axis=0)
@@ -53,22 +53,19 @@ def initialize_feature(features, col, val=1):
 
 
 # generate initial params_array
-def generate_params(count=2, generate_as="vector"):
+def generate_params(count=2):
     """
     generate initial parameters for features
 
     count: no of parameters
-    generate_as: vector or numpy array
-    """
-    if generate_as is "vector":
-        return np.zeros(count).reshape(-1, 1)
 
-    return np.zeros(count)
+    """
+    return np.zeros(count).reshape(-1, 1)
 
 # error vector
 
 
-def delta(features, params, train_out, regression_type=None):
+def delta(features, params, train_out):
     """
     Calculate's the error vector
 
@@ -79,8 +76,8 @@ def delta(features, params, train_out, regression_type=None):
 
     """
 
-    if regression_type is "logistic":
-        return sigmoid(features.dot(params)) - train_out
+    # if regression_type is "logistic":
+    #     return sigmoid(features.dot(params)) - train_out
 
     #     matrix multiplication
     return features.dot(params) - train_out
@@ -100,7 +97,7 @@ def squared_delta(features, params, train_out):
 
 
 # cost function for linear regression
-def loss(features, params, train_out, train_size=None):
+def cost(features, params, train_out, train_size=None):
     """
     Calculate the cost of plot_regression
 
@@ -118,7 +115,7 @@ def loss(features, params, train_out, train_size=None):
 
 
 # gradient of linear regression
-def gradient(features, params, train_out, train_size=None, regression_type=None):
+def linear_gradient(features, train_out, params, train_size=None):
     """
     Calculates the gradient of cost function
 
@@ -128,49 +125,41 @@ def gradient(features, params, train_out, train_size=None, regression_type=None)
     reg_type: logistic or linear
 
     """
-    if regression_type is "logistic":
-        return features.transpose().dot(delta(features, params, train_out,
-                                              regression_type="logistic"))
 
     if train_size is None:
         train_size = features.shape[0]
 
-    return (1 / train_size) * features.transpose().dot(delta(features,
-                                                             params, train_out))
+    return (1 / train_size) * features.transpose().dot(delta(features, params, train_out))
 
-
+   
 # batch gradienct descent for linear regression
-def batch_gradient_descent(features, train_out, params=None, train_size=None,
-                           tolerance=None, epochs=1500, learn_rate=0.06):
+def batch_gradient_descent(features, train_out, params=None,
+                           epochs=1500, learn_rate=0.01):
 
-    if tolerance is None:
-        tolerance = 0.0001
+    train_size = features.shape[0]
 
-    if train_size is None:
-        train_size = features.shape[0]
+    params = generate_params(features.shape[1])
 
-    if params is None:
-        params = generate_params(features.shape[1])
+    cost_history = np.zeros(epochs)
 
-    loss_array = np.zeros(epochs)
     params_array = []
 
     for i in np.arange(epochs):
 
         # calculate the gradient vector
-        grd = gradient(features, params, train_out).reshape(-1, 1)
+        gradient_params = linear_gradient(features, train_out, params, train_size)
 
         # calculate the new params
-        params = params - (learn_rate * grd)
+        params = params - (learn_rate * gradient_params)
 
         # calculate and append to cost function for the params to a list
-        loss_array[i] = loss(features, params, train_out,
-                             train_size)
+        cost_history[i] = cost(features, params, train_out,
+                               train_size)
 
         # append the params to a list
         params_array.append(params.tolist())
 
-    return params, loss_array, params_array
+    return params, cost_history, params_array
 
 
 # normal equation to calculate the params
@@ -188,12 +177,29 @@ def normal_equation(features, train_out):
 
     return m_inv(x_prime.dot(features)).dot(x_prime).dot(train_out)
 
-# def stochastic_grad_descent():
-#     pass
-#
-#
-# def plot_regression():
-#     pass
+
+def computeCost(X, y, theta=[[0], [0]]):
+    m = y.size
+    J = 0
+
+    h = X.dot(theta)
+
+    J = 1 / (2 * m) * np.sum(np.square(h - y))
+
+    return(J)
+
+
+def gradientDescent(X, y, theta=[[0], [0]], alpha=0.01, num_iters=1500):
+    m = y.size
+    J_history = np.zeros(num_iters)
+
+    for iter in np.arange(num_iters):
+            h = X.dot(theta)
+            theta = theta - alpha * (1 / m) * (X.T.dot(h - y))
+            J_history[iter] = computeCost(X, y, theta)
+    return(theta, J_history)
+        
+
 
 
 # def linear_regression_plot(data, params, figurehdl, plottype='univar'):
