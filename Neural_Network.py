@@ -1,7 +1,7 @@
-import numpy as np  
-import pandas as pd 
-import Modules.ml_data as dh 
-import Modules.Neural as nn 
+import numpy as np
+import pandas as pd
+import Modules.data.ml_data as dh
+import Modules.Neural as nn
 import matplotlib.pyplot as plt
 
 import matplotlib.animation as animation
@@ -10,7 +10,7 @@ import matplotlib.animation as animation
 # iris data ====================
 
 def run_iris_learning():
-    
+
     train_data, test_data = dh.load_iris_data()
 
     train_X = train_data.iloc[:, 1:5].T
@@ -34,7 +34,8 @@ def run_iris_learning():
 
     # calculate training accuracy
 
-    print('Training accuracy is {0:.2f} %'. format(NN.training_accuracy(train_X.values, train_Y.values)))
+    print('Training accuracy is {0:.2f} %'. format(
+        NN.training_accuracy(train_X.values, train_Y.values)))
     print('Testing accuracy is {0:.2f} %'. format(NN.training_accuracy(
         test_X.values, test_Y.values)))
 
@@ -43,5 +44,3 @@ def run_iris_learning():
 
 if __name__ == "__main__":
     run_iris_learning()
-
-    

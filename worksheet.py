@@ -1,8 +1,8 @@
 from sklearn.linear_model import LinearRegression
-from Modules.regression import initialize_feature as init_feature
-from Modules.regression import batch_gradient_descent as bgd
+from Modules.J_ai.J_regression import initialize_feature as init_feature
+from Modules.J_ai.J_regression import batch_gradient_descent as bgd
 import scipy.optimize as opt
-import Modules.ml_data as datahlpr
+import Modules.data.ml_data as datahlpr
 import numpy as np
 import matplotlib.pyplot as plt
 
