@@ -1,37 +1,37 @@
-from sklearn.linear_model import LinearRegression
 from Modules.J_ai.J_regression import initialize_feature as init_feature
 from Modules.J_ai.J_regression import batch_gradient_descent as bgd
 import scipy.optimize as opt
-import Modules.data.ml_data as datahlpr
+import Modules.helpers.datahelper as dh
 import numpy as np
 import matplotlib.pyplot as plt
 
-X, Y = datahlpr.load_food_truck_data()
+X, Y = dh.load_food_truck_data()
 
 init_X = init_feature(X, 0)
 
-print(X, init_X)
+# print(X, init_X)
 
-param, cost_h, p_array = bgd(init_X, Y)
-print(param)
+param, cost_h, p_array = bgd(init_X, Y, epochs=3000)
+
+plt.figure(1)
+plt.plot(p_array[0, :], cost_h)
+
+plt.figure(2)
+plt.plot(p_array[1, :], cost_h)
 
 xx = np.arange(np.min(X), np.max(X))
 
 yy = param[0] + param[1] * xx
 
+plt.figure(3)
 plt.scatter(X, Y, c='r')
 plt.plot(xx, yy, label="Linear Regression bgd")
 
-# =================sci learn======================
+plt.figure(4)
+ms = np.linspace(param[0] - 20, param[0] + 20, 20)
+bs = np.linspace(param[1] - 40, param[1] + 40, 40)
 
-regr = LinearRegression()
-regr.fit(X, Y.ravel())
-print(regr.coef_,  regr.intercept_)
+M, B = np.meshgrid(ms, bs)
 
-
-plt.plot(xx, regr.intercept_ + regr.coef_ * xx, label='Linear regression (Scikit-learn GLM)')
-
-# =================sci py================================
-
-plt.legend(loc=4)
+print(M, B)
 plt.show()

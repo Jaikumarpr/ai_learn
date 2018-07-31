@@ -131,7 +131,7 @@ def linear_gradient(features, train_out, params, train_size=None):
 
     return (1 / train_size) * features.transpose().dot(delta(features, params, train_out))
 
-   
+
 # batch gradienct descent for linear regression
 def batch_gradient_descent(features, train_out, params=None,
                            epochs=1500, learn_rate=0.01):
@@ -142,7 +142,7 @@ def batch_gradient_descent(features, train_out, params=None,
 
     cost_history = np.zeros(epochs)
 
-    params_array = []
+    params_array = np.array([[0], [0]])
 
     for i in np.arange(epochs):
 
@@ -157,9 +157,9 @@ def batch_gradient_descent(features, train_out, params=None,
                                train_size)
 
         # append the params to a list
-        params_array.append(params.tolist())
+        params_array = np.concatenate((params_array, params), axis=1)
 
-    return params, cost_history, params_array
+    return params, cost_history, params_array[:, 1:]
 
 
 # normal equation to calculate the params
@@ -194,12 +194,10 @@ def gradientDescent(X, y, theta=[[0], [0]], alpha=0.01, num_iters=1500):
     J_history = np.zeros(num_iters)
 
     for iter in np.arange(num_iters):
-            h = X.dot(theta)
-            theta = theta - alpha * (1 / m) * (X.T.dot(h - y))
-            J_history[iter] = computeCost(X, y, theta)
+        h = X.dot(theta)
+        theta = theta - alpha * (1 / m) * (X.T.dot(h - y))
+        J_history[iter] = computeCost(X, y, theta)
     return(theta, J_history)
-        
-
 
 
 # def linear_regression_plot(data, params, figurehdl, plottype='univar'):
