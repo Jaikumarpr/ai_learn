@@ -1,66 +1,9 @@
 
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import numpy as np
-import json
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from tempfile import TemporaryFile
-
-
-class activate_tanh(object):
-    """Tanh activation function"""
-
-    def activate(self, z):
-        return np.tanh(z)
-
-    def activate_prime(self, z):
-        return 1 - np.tanh(z) ** 2
-
-
-class activate_RELU(object):
-    """RELU activation function"""
-
-    def activate(self, z):
-        return np.maximum(z, 0, z)
-
-    def activate_prime(self, z):
-        return np.where(z >= 0, 1, 0)
-
-
-class activate_LRELU(object):
-    """RELU activation function"""
-
-    def activate(self, z):
-        return np.maximum(z, 0.01 * z, z)
-
-    def activate_prime(self, z):
-        return np.where(z >= 0, 1, 0.01)
-
-
-def save_weights_temp(w, b):
-    weight = np.array(w)
-    bias = np.array(b)
-    np.save('temp_out_weights', weight)
-    np.save('temp_out_bias', bias)
-
-
-def load_weights_temp():
-    w = np.load('temp_out_weights.npy')
-    b = np.load('temp_out_bias.npy')
-
-    return w.tolist(), b.tolist()
-
-
-def save_weights(w, b):
-    data = json.dumps({"weight": w, "bias": b})
-    with open("//Users//jaikumar//Projects//ai_learn//dump.txt", 'w') as f:
-        f.write(data)
-
-
-def load_weights():
-    with open("//Users//jaikumar//Projects//ai_learn//dump.txt", 'r') as f:
-        s = f.read()
-        data = json.loads(s)
-        return data["weights"], data["bias"]
 
 
 class NeuralNetwork(object):
@@ -172,33 +115,29 @@ class NeuralNetwork(object):
             delta = np.dot(self.weight_matrices[-(i + 1)].T, delta) * \
                 self.act_func.activate_prime(weighted_inputs[-(i + 2)])
 
-        # return reversed list of dw and db also loss
+        # return reversed list of dw and db, loss
         return dw[::-1], db[::-1], loss
 
-    def print_loss(self):
-        plt.plot(self.loss)
-        plt.show()
 
-
-if __name__ == '__main__':
-    w, b = load_weights_temp()
-
-    X = np.array([[0, 0],
-                  [1, 0],
-                  [0, 1],
-                  [1, 1]])
-
-    Y = np.array([[0],
-                  [1],
-                  [1],
-                  [0]])
-    tanhh = activate_tanh()
-    RELU = activate_RELU()
-    LRELU = activate_LRELU()
-    NN = NeuralNetwork([2, 3, 3, 1], tanhh, weights=w, bias=b)
-
-    w, b = NN.train(X.T, Y.T, 0.1, 10000)
-
-    # save_weights_temp(w, b)
-
-    NN.predict(X.T)
+# if __name__ == '__main__':
+#     w, b = load_weights_temp()
+#
+#     X = np.array([[0, 0],
+#                   [1, 0],
+#                   [0, 1],
+#                   [1, 1]])
+#
+#     Y = np.array([[0],
+#                   [1],
+#                   [1],
+#                   [0]])
+#     tanhh = actFunc.tanh()
+#     RELU = activate_RELU()
+#     LRELU = activate_LRELU()
+#     NN = NeuralNetwork([2, 3, 3, 1], tanhh, weights=w, bias=b)
+#
+#     w, b = NN.train(X.T, Y.T, 0.1, 10000)
+#
+#     # save_weights_temp(w, b)
+#
+#     NN.predict(X.T)
